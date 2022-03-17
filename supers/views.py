@@ -9,8 +9,11 @@ from rest_framework import status
 class SuperList(APIView):
     #Gets all Supers
     def get(self, request, format=None):
-        super = Super.objects.all()
-        serializer = SuperSerializer(super, many=True)
+        super_type = request.query_params.get('super_type')
+        queryset = Super.objects.all()
+        if super_type:
+            queryset = queryset.filter(super_type__name=super_type)
+        serializer = SuperSerializer(queryset, many=True)
         return Response(serializer.data)
     
     #Creates Super
