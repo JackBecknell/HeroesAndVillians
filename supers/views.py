@@ -1,4 +1,4 @@
-
+ 
 from .models import Super
 from .serializers import SuperSerializer
 from django.http import Http404
@@ -29,8 +29,7 @@ class SuperDetail(APIView):
             return Super.objects.get(pk=pk)
         except Super.DoesNotExist:
             raise Http404
-
-        #the Gets_object function relies on the get function to return a single Product by pk
+  
     def get(self, request, pk, format=None):
         super = self.get_object(pk)
         serializer = SuperSerializer(super)
