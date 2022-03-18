@@ -79,9 +79,7 @@ class SuperPatch(APIView):
     def patch(self, request, pk, fk, format=None):
         power_to_add = Power.objects.get(pk=fk)
         super = self.get_object(pk)
-        current_powers = super.powers
         super.powers.add(power_to_add)
-        super = self.get_object(pk)
         serializer = SuperSerializer(super)
         return Response(serializer.data)
 
