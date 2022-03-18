@@ -70,15 +70,21 @@ class SuperDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class SuperPatch(APIView):
-    def get_object(self, pk):
+    def get_super(self, pk):
         try:
             return Super.objects.get(pk=pk)
         except Super.DoesNotExist:
             raise Http404
+
+    def get_power(self, pk):
+        try:
+            return Power.objects.get(pk=pk)
+        except Power.DoesNotExist:
+            raise Http404
     #Calls get_object and returns 'Super' to allow a power to be added
     def patch(self, request, pk, fk, format=None):
-        power_to_add = Power.objects.get(pk=fk)
-        super = self.get_object(pk)
+        power_to_add = self.get_power(fk)
+        super = self.get_super(pk)
         super.powers.add(power_to_add)
         serializer = SuperSerializer(super)
         return Response(serializer.data)
