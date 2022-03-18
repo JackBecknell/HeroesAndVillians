@@ -5,17 +5,50 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from super_types.models import SuperType
 
 class SuperList(APIView):
     #Gets all Supers
     def get(self, request, format=None):
         super_type = request.query_params.get('super_type')
         queryset = Super.objects.all()
-        if super_type:
-            queryset = queryset.filter(super_type__name=super_type)
-        serializer = SuperSerializer(queryset, many=True)
-        return Response(serializer.data)
-    
+        all_supers = Super.objects.all()
+        if super_type == 'Hero' or super_type == 'Villian':
+            queryset = all_supers.filter(super_type__name=super_type)
+            serializer = SuperSerializer(queryset, many=True)  
+            return Response(serializer.data)         
+        elif super_type == '':
+            queryset = {}
+            types = SuperType.objects.all()
+            for type in types:
+                supers = Super.objects.filter(super_type_id=type.id)
+                super_serializer = SuperSerializer(supers, many=True)
+                queryset[type.name] = {
+                    "supers": super_serializer.data
+                }
+            return Response(queryset)
+        else:
+            queryset = Super.objects.all()
+            serializer = SuperSerializer(queryset, many=True)
+            return Response(serializer.data)
+
+    def query_by_type(self, query_super_type):
+        all_supers = Super.objects.all()
+        if query_super_type == 'Hero' or query_super_type == 'Villian':
+            queryset = all_supers.filter(super_type__name=query_super_type)
+            serializer = SuperSerializer(queryset, many=True)  
+            return Response(serializer.data)      
+        else:
+            queryset = {}
+            types = SuperType.objects.all()
+            for type in types:
+                supers = Super.objects.filter(super_type_id=type.id)
+                serializer = SuperSerializer(supers, many=True)
+                queryset[type.name] = {
+                    "supers": serializer.data
+                }
+            return Response(serializer.data)
+
     #Creates Super
     def post(self, request, format=None):
         serializer = SuperSerializer(data=request.data)
