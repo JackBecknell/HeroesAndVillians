@@ -1,6 +1,7 @@
  
 from unicodedata import name
 from .models import Super
+from powers.models import Power
 from .serializers import SuperSerializer
 from django.http import Http404
 from rest_framework.views import APIView
@@ -76,9 +77,15 @@ class SuperPatch(APIView):
             raise Http404
     #Calls get_object and returns 'Super' to allow a power to be added
     def patch(self, request, pk, fk, format=None):
+        power_to_add = Power.objects.get(pk=fk)
         super = self.get_object(pk)
-        super.powers.add(request.data)
-        super.powers.save()
+        current_powers = super.powers
+        super.powers.add(power_to_add)
+        super = self.get_object(pk)
+        serializer = SuperSerializer(super)
+        return Response(serializer.data)
+
+    
 
 
 
