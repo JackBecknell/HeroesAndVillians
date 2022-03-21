@@ -9,4 +9,3 @@ class Super(models.Model):
     catchphrase = models.CharField(max_length=255)
     super_type = models.ForeignKey(SuperType, on_delete=models.PROTECT)
 
-
