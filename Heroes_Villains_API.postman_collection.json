@@ -276,6 +276,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get_Two_Supers_Compare_Powers(Param)",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
